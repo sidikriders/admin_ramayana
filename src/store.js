@@ -58,7 +58,10 @@ export default new Vuex.Store({
       state.token = data
     },
     showError (state, data) {
-      state.err = data
+      state.err = {
+        title: data.title || 'Error',
+        msg: data.msg
+      }
       state.showError = 'modal is-active'
     },
     closeError (state) {
