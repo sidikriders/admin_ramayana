@@ -66,6 +66,7 @@
 <style lang="scss" scoped>
 .top-bar {
   position: fixed;
+  z-index: 1;
   width: 100vw;
   height: 45px;
   background-color: burlywood;
@@ -74,7 +75,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 15px;
+  padding: 10px 30px 10px 15px;
   svg {
     font-size: 20px;
     cursor: pointer;
@@ -89,6 +90,7 @@
 
 .side-bar {
   position: fixed;
+  z-index: 1;
   top: 45px;
   left: -300px;
   height: 100vh;
