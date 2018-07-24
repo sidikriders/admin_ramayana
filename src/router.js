@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import Dashboard from './views/Dashboard.vue'
 import Login from './views/Login.vue'
 import showType from './views/showType.vue'
+import showTypeNew from './views/showTypeNew.vue'
 
 Vue.use(Router)
 
@@ -23,6 +24,11 @@ export default new Router({
       path: '/show-type',
       name: 'show-type',
       component: showType
+    },
+    {
+      path: '/show-type/new',
+      name: 'show-type-new',
+      component: showTypeNew
     }
   ]
 })

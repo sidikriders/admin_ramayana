@@ -1,7 +1,7 @@
 <template>
   <div class='router-view'>
     <h1>Show Types</h1>
-    <table class='table' v-if=!creatingNew>
+    <table class='table'>
       <thead>
         <tr>
           <th>No.</th>
@@ -21,38 +21,9 @@
         </tr>
       </tbody>
     </table>
-    <button class="rb-btn d" @click='createNew' v-if=!creatingNew>
+    <button class="rb-btn d" @click='createNew'>
       Add Show Types
     </button>
-    <div v-if="creatingNew" class='create-new'>
-      <h3>Create New Show Type</h3>
-      <form>
-        <div class="input-group">
-          <label>
-            New Type Name
-          </label>
-          <input type="text" v-model=newType.name placeholder="New show type name">
-        </div>
-        <div class="input-group">
-          <label>
-            Seating Map Image
-          </label>
-          <img :src="seatMapImg">
-          <a @click="changeSeatMapImg('seat-map-img')" v-show= "seatMapImg !== ''">[ change ]</a>
-          <input type="file" name="new type seat map" ref="seatMap" id='seat-map-img' placeholder="Seat map" @change="showSeatMapImg" accept='image/*' v-show= "seatMapImg === ''">
-        </div>
-        <div class="input-group">
-          <label>
-            Show Type Images
-          </label>
-          <img :src= "img" v-for= "(img, index) in newType.photos" :key= "index">
-          <a @click="addShowPhoto">+ add image</a>
-        </div>
-        <div class='input-group' v-for= "(img, index) in newType.photos" :key= "index">
-          <input type="file" name="new type seat map" :id="'show-img-' + index" ref="seatMap" class='show-img' placeholder="Seat map" @change="updateShowImg" accept='image/*' v-show= "newType.photos[index] === ''">
-        </div>
-      </form>
-    </div>
   </div>
 </template>
 
@@ -112,32 +83,14 @@ export default {
   name: 'show-type',
   data: function () {
     return {
-      list: [],
-      creatingNew: false,
-      newType: {
-        name: '',
-        photos: []
-      },
-      seatMapImg: ''
+      list: []
     }
+  },
+  computed: {
   },
   methods: {
     createNew () {
-      this.creatingNew = true
-    },
-    showSeatMapImg (e) {
-      var file = e.target.files[0]
-      this.seatMapImg = URL.createObjectURL(file)
-    },
-    changeSeatMapImg (str) {
-      this.seatMapImg = ''
-      document.getElementById(str).value = ''
-    },
-    addShowPhoto () {
-      this.newType.photos.push('')
-    },
-    updateShowImg (e) {
-      var file = e.target.files[0]
+      this.$router.push('/show-type/new')
     }
   },
   beforeMount: function () {
@@ -155,29 +108,3 @@ export default {
   }
 }
 </script>
-
-<style lang="scss" scoped>
-  .create-new {
-    width: 100%;
-    max-width: 520px;
-    h3 {
-      width: 100%;
-      padding: 15px;
-    }
-    form {
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-    }
-  }
-
-  .input-group {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 15px;
-    img {
-    width: 300px;
-    margin-bottom: 15px;
-    }
-  }
-</style>

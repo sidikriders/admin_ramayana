@@ -30,6 +30,16 @@ export default new Vuex.Store({
         timeout: 30000,
         headers: { 'RB-Bearer': state.token }
       })
+    },
+    _axiosFormData: state => {
+      return axios.create({
+        baseURL: state.baseUrl,
+        timeout: 30000,
+        headers: {
+          'RB-Bearer': state.token,
+          'Content-Type': 'multipart/form-data'
+        }
+      })
     }
   },
   mutations: {
