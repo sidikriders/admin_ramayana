@@ -7,6 +7,7 @@
           <th>No.</th>
           <th>Status</th>
           <th>Name</th>
+          <th>Short Description</th>
           <th>Group</th>
           <th>Tags</th>
           <th>Actions</th>
@@ -29,6 +30,12 @@
             </router-link>
             <p>
               <i>{{ li.nameEn }}</i>
+            </p>
+          </td>
+          <td class="short-desc-row">
+            <p>{{ li.shortDesc }}</p>
+            <p>
+              <i>{{ li.shortDescEn }}</i>
             </p>
           </td>
           <td>
@@ -89,7 +96,7 @@ export default {
   computed: {
   },
   methods: {
-    deleteAttraction (at,tr) {
+    deleteAttraction (attr) {
       var isSure = confirm('Yakin mau hapus ' + attr.name + ' ya?')
       if (isSure) {
         alert('terhapus')
@@ -102,7 +109,7 @@ export default {
     }
   },
   beforeMount: function () {
-    document.title = 'Show Type'
+    document.title = 'Attraction List'
     this.$store.getters._axios.get('/attraction').then(resp => {
       if (resp.data.status) {
         this.list = resp.data.data
@@ -142,5 +149,7 @@ p.un.published {
   }
 }
 
-
+td.short-desc-row {
+  max-width: 530px;
+}
 </style>
