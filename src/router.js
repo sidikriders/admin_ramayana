@@ -4,6 +4,8 @@ import Dashboard from './views/Dashboard.vue'
 import Login from './views/Login.vue'
 import showType from './views/showType.vue'
 import showTypeNew from './views/showTypeNew.vue'
+import Attraction from './views/Attraction.vue'
+import FormAttraction from './views/FormAttraction.vue'
 
 Vue.use(Router)
 
@@ -29,6 +31,16 @@ export default new Router({
       path: '/show-type/new',
       name: 'show-type-new',
       component: showTypeNew
+    },
+    {
+      path: '/attraction',
+      name: 'attraction',
+      component: Attraction
+    },
+    {
+      path: '/attraction/:id',
+      name: 'form-attraction',
+      component: FormAttraction
     }
   ]
 })

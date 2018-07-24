@@ -19,13 +19,28 @@
         <li><router-link to='/show-type'>Show Type</router-link></li>
         <li><router-link to='/sho-schedule'>Show Schedule</router-link></li>
       </ul>
-      <!-- <p class="menu-label">
-        Administration
+      <p class="menu-label">
+        Attraction
       </p>
       <ul class="menu-list">
-        <li><a>Team Settings</a></li>
         <li>
-          <a class="is-active">Manage Your Team</a>
+          <router-link to='/attraction'>Attraction List</router-link>
+          <ul>
+            <li><router-link to='/attraction/group'>Attraction's Group</router-link></li>
+            <li><router-link to='/attraction/tags'>Attraction's Tags</router-link></li>
+          </ul>
+        </li>
+      </ul>
+      <p class="menu-label">
+        Tour Packages
+      </p>
+      <ul class="menu-list">
+        <li>
+          <router-link to='/tour-packages'>Tour Package List</router-link>
+        </li>
+      </ul>
+        <!-- <li>
+          <a>Manage Your Team</a>
           <ul>
             <li><a>Members</a></li>
             <li><a>Plugins</a></li>
@@ -79,7 +94,7 @@
   height: 100vh;
   width: 300px;
   padding: 15px;
-  background-color: #bd8237;
+  background-color: #dfdad5;
   transition: all 0.15s ease-in;
   user-select: none;
   -moz-user-select: none;

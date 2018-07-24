@@ -136,6 +136,32 @@ input.input:focus {
   background-color: #feb100;
 }
 
+.rb-btn.w {
+  background-color: red;
+  color: white;
+  font-weight: 600;
+  font-size: 17px;
+  text-align: center;
+  max-width: fit-content;
+}
+
+.rb-btn.w:hover {
+  background-color: #fb7474;
+}
+
+.rb-btn.c {
+  background-color: #2edcd7;
+  color: #333;
+  font-weight: 600;
+  font-size: 17px;
+  text-align: center;
+  max-width: fit-content;
+}
+
+.rb-btn.c:hover {
+  background-color: #2ea1dc;
+}
+
 h1 {
   font-size: 24px;
 }
