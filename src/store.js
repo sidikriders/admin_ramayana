@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from 'axios'
+import * as firebase from 'firebase'
+
 import config from '../config'
 import router from './router'
 
@@ -21,7 +23,8 @@ export default new Vuex.Store({
     },
     isLogin: false,
     sideMenu: false,
-    activeRouter: 'login'
+    activeRouter: 'login',
+    isLoading: false
   },
   getters: {
     _axios: state => {
@@ -82,6 +85,9 @@ export default new Vuex.Store({
     },
     hideSideMenu (state) {
       state.sideMenu = false
+    },
+    changeIsLoading (state) {
+      state.isLoading = !state.isLoading
     }
   },
   actions: {
@@ -107,6 +113,61 @@ export default new Vuex.Store({
     },
     showSideMenu (context) {
       context.commit('changeSideMenu')
+    },
+    createAttraction (context, payload) {
+      context.commit('changeIsLoading')
+      var images = payload.images
+      var storage = firebase.storage()
+      Promise.all(images.map((_file, index) => {
+        var file = _file.file
+        var name = file.name
+        var ext = name.slice(name.lastIndexOf('.'))
+        var _name = (index + 1) + '-' + new Date().getTime() + '-' + payload.name.toLowerCase().split(' ').join('-') + '-' + name.toLowerCase().split(' ').join('-')
+        return storage.ref('attactions-images/' + _name).put(file).then(fileData => {
+          return {
+            title: false,
+            titleEn: false,
+            url: fileData.ref.getDownloadURL()
+          }
+        })
+      })).then(urls => {
+        var imgs = urls
+        // context.commit('changeIsLoading')
+        var _payload = {
+          name: payload.name,
+          nameEn: payload.nameEn,
+          shortDesc: payload.shortDesc,
+          shortDescEn: payload.shortDescEn,
+          desc: payload.desc,
+          descEn: payload.descEn,
+          groupId: payload.groupId,
+          images: imgs,
+          tags: payload.tags.map(tag => tag.id)
+        }
+        return context.getters._axios.post('/attraction', _payload).then(resp => {
+          context.commit('changeIsLoading')
+          if (resp.data.status) {
+            router.push('/attraction')
+          } else {
+            console.error(resp.data.data)
+            context.commit('showError', {
+              msg: 'Failed at creating attraction'
+            })
+          }
+        }).catch(err => {
+          console.error(err)
+          context.commit('changeIsLoading')
+          context.commit('showError', {
+            msg: 'Failed at creating attraction'
+          })
+        })
+      }).catch(err => {
+        console.error(err)
+        context.commit('changeIsLoading')
+        context.commit('showError', {
+          msg: 'Failed upload images'
+        })
+      })
     }
   }
 })

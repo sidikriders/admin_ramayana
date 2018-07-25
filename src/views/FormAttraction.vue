@@ -80,7 +80,7 @@
         </label>
         <div class="input-container checkbox">
           <label class="checkbox" v-for="(tag, index) in tagList" :key="index">
-            <input type="checkbox">
+            <input type="checkbox" v-model="tag.selected">
             {{ tag.name }}
           </label>
         </div>
@@ -88,53 +88,6 @@
           Add new tag
         </button>
       </div>
-      <!-- <div class="input-group">
-        <label>
-          Seating Map Image
-        </label>
-        <img :src="seatMapImg" v-show="seatMapImg">
-        <a @click="changeSeatMapImg('seat-map-img')" v-show= "seatMapImg !== ''">[ change ]</a>
-        <input type="file" name="new type seat map" ref="seatMap" id='seat-map-img' placeholder="Seat map" @change="showSeatMapImg" accept='image/*' v-show= "seatMapImg === ''">
-      </div>
-      <div class="input-group">
-        <label>
-          Price Group
-        </label>
-        <div class="price-type" v-for="(price, index) in seatGroup" :key="index">
-          <div class="input-seat-detail">
-            <span>Name</span>
-            <input class="input" type="text" v-model="price.name" :id="'type-name-' + index" placeholder="price name...">
-          </div>
-          <div class="input-seat-detail">
-            <span>Jumlah Seat</span>
-            <input class="input" type="number" v-model="price.seatCount" :id="'type-count-' + index">
-          </div>
-          <div class="input-seat-detail">
-            <span>Price</span>
-            <input class="input" type="number" v-model="price.price" :id="'type-price-' + index">
-          </div>
-          <font-awesome-icon icon='times' @click="deletePriceType(index)"></font-awesome-icon>
-        </div>
-        <a @click="addPriceType" style="width: fit-content;">[ add price group ]</a>
-      </div>
-      <div class="input-group">
-        <label>
-          Show Type Images
-        </label>
-        <div class="new-type-img-container">
-          <div class="image-unit" v-for="(image, index) in newTypeImages" :key="index" v-show="!!image">
-            <font-awesome-icon icon="times" @click="deleteImage(index)"></font-awesome-icon>
-            <img :src= "image">
-          </div>
-        </div>
-        <input type="file" name="new type image"
-        ref="showTypeImages"
-        class='show-img-input'
-        placeholder="Show Type Image"
-        @change="updateShowImg"
-        accept='image/*'
-        >
-      </div> -->
       <button v-if="isCreate" @click="addNewAttraction" class="rb-btn p">
         Add New Attraction
       </button>
@@ -199,11 +152,17 @@ export default {
     },
     addImage (event) {
       var file = event.target.files[0]
-      var fileUrl = URL.createObjectURL(file)
-      this.attractionImages.push({
-        data: fileUrl,
-        file
-      })
+      if (file.size > (5 * 1024 * 1024)) {
+        this.$store.commit('showError', {
+          msg: 'Maximum file is 5mb'
+        })
+      } else {
+        var fileUrl = URL.createObjectURL(file)
+        this.attractionImages.push({
+          data: fileUrl,
+          file
+        })
+      }
       event.target.value = ''
     },
     deleteImage (index) {
@@ -222,6 +181,7 @@ export default {
               if (resp.data.status) {
                 return this.fetchTags()
               } else {
+                console.error(resp.data.data)
                 return this.$store.commit('showError', {
                   msg: 'Gagal membuat tag baru'
                 })
@@ -246,6 +206,7 @@ export default {
               if (resp.data.status) {
                 return this.fetchGroup()
               } else {
+                console.error(resp.data.data)
                 return this.$store.commit('showError', {
                   msg: 'Gagal membuat tag baru'
                 })
@@ -265,9 +226,39 @@ export default {
       }
     },
     addNewAttraction () {
-      this.attractionImages.forEach(el => {
-        console.log(el.file.name.slice(el.file.name.lastIndexOf('.')))
-      })
+      if (this.validateNewAttraction()) {
+        this.$store.dispatch('createAttraction', {
+          published: this.attraction.published,
+          name: this.attraction.name,
+          nameEn: this.attraction.nameEn,
+          groupId: this.attraction.attractionGroupId,
+          desc: this.attraction.desc,
+          descEn: this.attraction.descEn,
+          shortDesc: this.attraction.shortDesc,
+          shortDescEn: this.attraction.shortDescEn,
+          images: this.attractionImages,
+          tags: this.tagList.filter(tag => tag.selected)
+        })
+      } else {
+        var arrKey = Object.keys(this.attraction)
+        arrKey.forEach(key => {
+          if (!this.attraction[key] && key !== 'published') console.error(key + ' is empty')
+        })
+        if (this.attractionImages.length === 0) console.error('images cannot be empty')
+        this.$store.commit('showError', {
+          msg: 'Data not complete'
+        })
+      }
+    },
+    validateNewAttraction () {
+      return this.attraction.name !== '' &&
+      this.attraction.nameEn !== '' &&
+      this.attraction.desc !== '' &&
+      this.attraction.descEn !== '' &&
+      this.attraction.shortDesc !== '' &&
+      this.attraction.shortDescEn !== '' &&
+      this.attraction.attractionGroupId &&
+      this.attractionImages.length > 0
     }
   },
   beforeMount: function () {
@@ -277,7 +268,6 @@ export default {
       this.isCreate = true
       document.title = 'Create New Attraction'
     }
-    // this.$store.getters._axios.get('/attraction/')
   }
 }
 </script>
@@ -347,6 +337,9 @@ export default {
       };
     }
   };
+  .rb-btn.p {
+    margin-top: 20px;
+  }
 }
 
 svg[data-icon="times"] {

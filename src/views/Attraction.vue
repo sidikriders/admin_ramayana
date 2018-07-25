@@ -99,27 +99,50 @@ export default {
     deleteAttraction (attr) {
       var isSure = confirm('Yakin mau hapus ' + attr.name + ' ya?')
       if (isSure) {
-        alert('terhapus')
+        this.$store.commit('changeIsLoading')
+        this.$store.getters._axios.delete('/attraction/' + attr.id).then(resp => {
+          if (resp.data && resp.data.status) {
+            alert('terhapus')
+            this.fetchAttractionList()
+          } else {
+            console.error(resp)
+            this.$store.commit('showError', {
+              msg: 'Gagal hapus atraksi'
+            })
+          }
+        }).catch(err => {
+          console.error(err)
+          this.$store.commit('changeIsLoading')
+          this.$store.commit('showError', {
+            msg: 'Gagal hapus atraksi'
+          })
+        })
       } else {
         alert('cie galau')
       }
     },
     createNew () {
       this.$router.push(this.$router.currentRoute.path + '/new')
+    },
+    fetchAttractionList () {
+      this.$store.getters._axios.get('/attraction').then(resp => {
+        this.$store.commit('changeIsLoading')
+        if (resp.data.status) {
+          this.list = resp.data.data
+        } else {
+          console.error(resp.data.data)
+          this.$store.dispatch('doLogout')
+        }
+      }).catch(err => {
+        this.$store.commit('changeIsLoading')
+        console.error(err)
+      })
     }
   },
   beforeMount: function () {
     document.title = 'Attraction List'
-    this.$store.getters._axios.get('/attraction').then(resp => {
-      if (resp.data.status) {
-        this.list = resp.data.data
-      } else {
-        console.error(resp.data.data)
-        this.$store.dispatch('doLogout')
-      }
-    }).catch(err => {
-      console.error(err)
-    })
+    this.$store.commit('changeIsLoading')
+    this.fetchAttractionList()
   }
 }
 </script>
