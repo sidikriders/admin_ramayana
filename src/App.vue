@@ -1,6 +1,7 @@
 <template>
   <div id="app">
     <modal-error></modal-error>
+    <loading-fullscreen></loading-fullscreen>
     <main-menu v-if=isLogin></main-menu>
     <transition name='slide'>
       <router-view/>
@@ -10,13 +11,15 @@
 
 <script>
 import modalError from '@/components/modalError.vue'
+import LoadingFullscreen from '@/components/FullscreenLoading.vue'
 import mainMenu from '@/components/mainMenu.vue'
 
 export default {
   name: 'App',
   components: {
     'modal-error': modalError,
-    'main-menu': mainMenu
+    'main-menu': mainMenu,
+    'loading-fullscreen': LoadingFullscreen
   },
   computed: {
     isLogin: function () {
